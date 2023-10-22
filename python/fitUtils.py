@@ -75,12 +75,18 @@ class tnpFitter(object):
         elif "fit" in method:
             isFit=True
 
+        print ("histPass.Integral() =" + str(histPass.Integral()) + " histPass.GetEffectiveEntries() = " + str(histPass.GetEffectiveEntries()))
+
         ## count_range
         if not hasattr(config,"count_range") or config.count_range is None:
             config.count_range=(config.fit_range[0],config.fit_range[1])
+        print("count_range config.count_range[0] = " + str(config.count_range[0]) + " config.count_range[1] = " + str(config.count_range[1]))
+        
         x.setRange("count_range",config.count_range[0],config.count_range[1])
 
         if isFit:
+            print("isFit")
+                
             sim_config=config.clone(isSim=True)
             for spass in ["Pass","Fail"]:
                 for smatched,matched in [["_genmatching",True],["_notgenmatching",False],["",None]]:
@@ -93,6 +99,8 @@ class tnpFitter(object):
                                 hist=sim_config.get_hist(ibin,isPass=spass=="Pass",genmatching=matched,genmass=sgen=="_genmass",random=hash(config.path+str(ibin)) if srandom=="_random" else None)
                                 work.Import(rt.RooDataHist(key,key,x,hist))
 
+            print("config.fit_parameter")
+
             for line in config.fit_parameter:
                 words=line.split()
                 if words[0]=="SetConstant":
@@ -102,7 +110,9 @@ class tnpFitter(object):
                     self.fit_hist(work.pdf(words[1]),work.data(words[2]),work)
                 else:
                     work.factory(line)
-
+                    
+            print("work.factory nP" + str(histPass.Integral()) + " FAIL = " + str(histFail.Integral()))
+            
             work.factory("nBkgP[{},0.5,{}]".format( histPass.Integral()*0.5, histPass.Integral()*2) )
             work.factory("nSigP[{},0.5,{}]".format( histPass.Integral()*0.5, histPass.Integral()*2) )
             work.factory("nBkgF[{},0.5,{}]".format( histFail.Integral()*0.5, histFail.Integral()*2) )
@@ -111,6 +121,7 @@ class tnpFitter(object):
             work.factory("SUM::pdfFail(nSigF*sigFail,nBkgF*bkgFail)")
 
             ## fit_range
+            print("fit_range config.fit_range[0] " + str(config.fit_range[0]) + " config.fit_range[1] = " + str(config.fit_range[1]))
             x.setRange("fit_range",config.fit_range[0],config.fit_range[1])
             xarg=rt.RooArgSet(x)        
 

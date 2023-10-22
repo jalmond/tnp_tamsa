@@ -442,7 +442,7 @@ def GetEfficiencyPlot(path,axis="y",ibin=None):
  
     GetAxisParent().GetXaxis().SetMoreLogLabels()
     GetAxisParent().GetYaxis().SetRangeUser(0.81,1.19)
-    GetAxisParent().GetYaxis().SetRangeUser(0.96,1.04)
+    GetAxisParent().GetYaxis().SetRangeUser(0.8,1.1)
     GetAxisParent().GetYaxis().SetNdivisions(205)
     GetAxisParent().GetYaxis().SetTitle("SF")
     GetAxisParent().SetTitleSize(0.04/min(ROOT.gPad.GetHNDC(),ROOT.gPad.GetWNDC()),"XYZ")
